@@ -108,10 +108,10 @@ which captures the tradeoff between density and velocity along the duct.
 The momentum balance accounts for wall friction. For a small duct segment of length \(dx\), the differential momentum equation is
 
 \[
-dp + \rho u\, du + \frac{4 f \rho u^2}{D}\, dx = 0,
+dp + \rho u\, du + \frac{4 \tau_w}{D}\, dx \;=\; dp + \rho u\, du + \frac{2 f \rho u^{2}}{D}\, dx = 0,
 \]
 
-where \(f\) is the Darcy friction factor, \(D\) is the duct diameter, and the wall shear stress is \(\tau_w = f \rho u^2 / 8\). This term represents the momentum loss due to friction along the duct walls.
+where \(f\) is the Fanning friction factor, \(D\) is the duct diameter, and the wall shear stress is \(\tau_w = f \rho u^{2} / 2\). The wall force per unit volume of a circular duct is \(4\tau_w/D\), which gives the friction term above and fixes the factor of four appearing in the dimensionless friction length \(4fL^{*}/D\) used throughout this chapter.
 
 Energy conservation in adiabatic flow requires that enthalpy plus kinetic energy remain constant:
 
@@ -137,15 +137,18 @@ Physically, the Fanno function reveals key characteristics:
     \item \textbf{Choking:} There exists a maximum duct length beyond which steady flow is impossible, occurring when \(M = 1\).
 \end{itemize}
 
-Once the local Mach number $M(x)$ is recovered from the Fanno relation, the auxiliary flow properties follow from the standard isentropic-stagnation expressions
+Once the local Mach number $M(x)$ is recovered from the Fanno relation, the auxiliary flow properties follow from the sonic-referenced Fanno ratios
 \[
-\frac{P(x)}{P_{0}} = \left[ \frac{1 + \tfrac{\gamma-1}{2} M^{2}}{1 + \tfrac{\gamma-1}{2} M_{0}^{2}} \right]^{-\frac{\gamma}{\gamma-1}},
+\frac{T}{T^{*}} = \frac{\gamma+1}{2 + (\gamma-1)M^{2}},
 \qquad
-\frac{T(x)}{T_{0}} = \frac{1 + \tfrac{\gamma-1}{2} M_{0}^{2}}{1 + \tfrac{\gamma-1}{2} M^{2}},
+\frac{P}{P^{*}} = \frac{1}{M}\sqrt{\frac{\gamma+1}{2 + (\gamma-1)M^{2}}},
 \qquad
-\rho(x) = \frac{P(x)}{R\,T(x)}.
+\frac{\rho}{\rho^{*}} = \frac{1}{M}\sqrt{\frac{2 + (\gamma-1)M^{2}}{\gamma+1}},
 \]
-This forward map from $(M_{0}, fL/D)$ to $(M, P, T, \rho)$ is the analytical reference used throughout this chapter.
+\[
+\frac{P_{0}}{P_{0}^{*}} = \frac{1}{M}\left[ \frac{2 + (\gamma-1)M^{2}}{\gamma+1} \right]^{\frac{\gamma+1}{2(\gamma-1)}},
+\]
+where the starred quantities denote the sonic reference state reached at the end of the duct. It is worth emphasising that these are \emph{not} isentropic relations. Fanno flow is adiabatic, so the stagnation temperature $T_{0}$ is constant along the duct, but friction generates entropy and the stagnation pressure $P_{0}$ therefore decreases monotonically towards the sonic point. This loss of stagnation pressure at constant stagnation temperature is the defining thermodynamic signature of the Fanno process, and it is the reason the static pressure cannot be obtained from the isentropic formula. This forward map from $M$ to $(T/T^{*},\, P/P^{*},\, P_{0}/P_{0}^{*},\, 4fL^{*}/D)$ is the analytical reference used throughout this chapter.
 
 \section{Modeling the Fanno Flow Problem}
 
@@ -619,7 +622,7 @@ The Fanno function $\Phi(M)$ defined in the previous sections is itself an antid
 \frac{dF}{dM} \;=\; \mathrm{RHS}(M) \;\equiv\; \frac{4\,(M^{2}-1)}{\gamma\,M^{3}\left[\,2+(\gamma-1)M^{2}\,\right]}, \qquad F(1) = 0.
 \end{equation}
 
-The boundary condition $F(1) = 0$ is the \emph{sonic anchor} of Fanno flow: the duct length required to reach the sonic state vanishes when the flow is already sonic. Note that $\mathrm{RHS}(M)$ is negative for $M < 1$, zero at $M = 1$, and positive for $M > 1$; the function $F(M)$ therefore has a minimum at the sonic point. Once $F(M)$ has been learned, the auxiliary flow variables $T/T^*$, $P/P^*$, and $P_0/P_0^*$ are recovered from the analytical isentropic relations, since each is a closed-form function of $M$ alone for a calorically perfect gas.
+The boundary condition $F(1) = 0$ is the \emph{sonic anchor} of Fanno flow: the duct length required to reach the sonic state vanishes when the flow is already sonic. Note that $\mathrm{RHS}(M)$ is negative for $M < 1$, zero at $M = 1$, and positive for $M > 1$; the function $F(M)$ therefore has a minimum at the sonic point. Once $F(M)$ has been learned, the auxiliary flow variables $T/T^*$, $P/P^*$, and $P_0/P_0^*$ are recovered from the analytical Fanno relations, since each is a closed-form function of $M$ alone for a calorically perfect gas.
 
 \paragraph{Network Architecture}
 The PINN used in this chapter is a small, fully connected network with the following structure:
@@ -866,7 +869,7 @@ The second demonstration adopts the canonical benchmark introduced by Raissi, Pe
 \end{aligned}
 \end{equation}
 
-is used unchanged here. The smooth sinusoidal initial condition is compressive on $x \in [0, 1]$, as discussed in the inviscid demonstration; for the chosen viscosity the smooth profile rapidly transitions into a thin internal layer centred on $x = 0$ shortly after $t = 1/\pi$, and that layer persists until the end of the integration window. Crucially, the viscosity removes the discontinuity that defeated the inviscid PINN beyond the breaking time: the solution is smooth for all $t \ge 0$, and a $\tanh$ network can represent it.
+is used unchanged here. The smooth sinusoidal initial condition is compressive near $x = 0$, where $\partial_{x} u < 0$ for $|x| < 1/2$, as discussed in the inviscid demonstration; for the chosen viscosity the smooth profile rapidly transitions into a thin internal layer centred on $x = 0$ shortly after $t = 1/\pi$, and that layer persists until the end of the integration window. Crucially, the viscosity removes the discontinuity that defeated the inviscid PINN beyond the breaking time: the solution is smooth for all $t \ge 0$, and a $\tanh$ network can represent it.
 
 The viscous Burgers equation admits an exact solution through the Cole--Hopf transformation \cite{Cole1951, Hopf1950}. Substituting $u = -2\nu\,\partial_x \phi / \phi$ converts equation~\eqref{eq:burgers_viscous} into the linear heat equation $\partial_t \phi = \nu\,\partial_{xx}\phi$, which can be solved by superposition of Gaussian kernels for the initial condition $\phi(x, 0) = \exp\!\left[-(2\nu)^{-1}\int_{0}^{x} u(\xi, 0)\,d\xi\right]$. The reference solution $u_{\mathrm{exact}}(x, t)$ used throughout this section is computed by Gauss--Hermite quadrature of the resulting Cole--Hopf integral on a fine $(x, t)$ grid; it is exact to machine precision modulo quadrature error, and serves as the analytical anchor for the viscous PINN comparison.
 
@@ -970,7 +973,7 @@ The two Burgers demonstrations together expose several principles that the Fanno
 
 The two Burgers demonstrations have shown that the PINN methodology developed for the Fanno ODE generalises cleanly to a time-dependent PDE in both its inviscid and viscous forms. The network architecture, the autodiff-based residual, and the optimiser protocol are essentially unchanged across the three case studies of this chapter; the modifications are confined to the input dimension, the order of the residual derivatives, the soft or hard enforcement of conditions, and an Adam-then-L-BFGS training schedule that finishes the optimisation in the high-accuracy basin.
 
-Pedagogically, Fanno and Burgers form a complementary triplet of demonstrators. Fanno isolates the singular sonic point inside a steady scalar ODE; the inviscid Burgers PINN tracks a rapidly steepening profile up to but not beyond the classical breaking time of the characteristic flow; the viscous Burgers PINN, in the canonical configuration of Raissi, Perdikaris, and Karniadakis~\cite{Raissi2019PINN}, resolves a thin internal viscous layer to engineering accuracy with only the governing PDE and soft IC and BC penalties. Together, they cover the two structural difficulties---singularities of the governing equation and discontinuities of its solution---that practitioners will face when extending PINNs to the full Sod shock-tube problem and to multidimensional compressible flows.
+Pedagogically, the three demonstrations form a complementary set. Fanno isolates the singular sonic point inside a steady scalar ODE; the inviscid Burgers PINN tracks a rapidly steepening profile up to but not beyond the classical breaking time of the characteristic flow; the viscous Burgers PINN, in the canonical configuration of Raissi, Perdikaris, and Karniadakis~\cite{Raissi2019PINN}, resolves a thin internal viscous layer to engineering accuracy with only the governing PDE and soft IC and BC penalties. Together, they cover the two structural difficulties---singularities of the governing equation and discontinuities of its solution---that practitioners will face when extending PINNs to the full Sod shock-tube problem and to multidimensional compressible flows.
 
 \renewcommand{\bibname}{References}
 \begin{thebibliography}{99}

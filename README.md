@@ -19,7 +19,8 @@ neural networks can complement classical compressible-flow analysis.
 |---|---|
 | `ai-in-gas-dynamics.tex` | LaTeX source of the draft (single-file, self-contained bibliography) |
 | `ai-in-gas-dynamics.pdf` | Current build — 33 pages |
-| `references.bib` | BibTeX entries, kept alongside the manuscript for reuse |
+| `references.bib` | BibTeX entries, mirroring the manuscript's inline bibliography |
+| `NOTES-corrections.md` | Record of a self-review pass and the corrections it produced |
 | `fig_poly_ridge_*.pdf` | Regression-baseline figures |
 | `fig_nn_*.pdf` | Supervised surrogate-network figures |
 | `fig_pinn_*.pdf` | Fanno PINN figures |
