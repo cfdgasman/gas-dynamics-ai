@@ -4,8 +4,8 @@ A working draft exploring how machine learning and physics-informed
 neural networks can complement classical compressible-flow analysis.
 
 > **About this version.** This is my own working draft — written, typeset and
-> compiled by me from my own notes and computations. It is shared here as a
-> personal record and study resource. It has not been through editorial or peer
+> compiled by me from my own notes and computations. It is kept here as a
+> personal record. It has not been through editorial or peer
 > review, and it is not a publisher's or editor's version of anything. If this
 > material is ever developed further, any released version would be produced
 > separately and may differ substantially from what is here. Nothing in this
@@ -26,7 +26,7 @@ neural networks can complement classical compressible-flow analysis.
 | `fig_pinn_*.pdf` | Fanno PINN figures |
 | `fig_burgers_*.pdf` | Inviscid and viscous Burgers PINN figures |
 
-Start with `ai-in-gas-dynamics.pdf` if you just want to read it.
+`ai-in-gas-dynamics.pdf` is the compiled draft.
 
 ---
 
